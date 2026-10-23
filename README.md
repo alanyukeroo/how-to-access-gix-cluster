@@ -31,18 +31,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/alanyukeroo/how-to-access-
 - If it asks for a passphrase for a new SSH key, press **Enter** twice.
 - At the end, type your **NetID password** (this is the only time).
 
-## Step 2: Change one VS Code setting (one time only)
-
-Getting a GPU can take a moment, so VS Code needs to wait longer.
-
-1. Press `Cmd+Shift+P` → **Preferences: Open User Settings (JSON)**
-2. Add this line inside the `{ }` and save:
-
-```json
-"remote.SSH.connectTimeout": 660,
-```
-
-## Step 3: Test it
+## Step 2: Test it
 
 In Terminal:
 
@@ -112,7 +101,7 @@ device: NVIDIA GeForce RTX 5090
 | `ssh gix-gpu` hangs or times out | Are you on the UW network or Husky OnNet? |
 | It asks for a password every time | Run Step 1 again |
 | `[gix-devjob] job … is PENDING, waiting...` for a long time | All GPUs are busy. Wait, or try again later |
-| VS Code says "Could not establish connection" | Check Step 2 (`connectTimeout`), then try again |
+| VS Code says "Could not establish connection" while the cluster is busy | VS Code gives up after 15 s, but getting a GPU can take longer. `Cmd+Shift+P` → **Preferences: Open User Settings (JSON)**, add `"remote.SSH.connectTimeout": 660,` inside the `{ }`, save, and connect again |
 | Terminal in the container has no Tab completion | Use the template's `devcontainer.json` (it sets the terminal to `bash`), then **Dev Containers: Rebuild Container** |
 
 Still stuck? Send your TA the output of `ssh -v gix-gpu hostname`.
