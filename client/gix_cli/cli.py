@@ -173,7 +173,6 @@ def main(argv=None):
     s = sub.add_parser("cancel", help="cancel a job (or 'all')")
     s.add_argument("jobid")
     sub.add_parser("whoami", help="your NetID and NAS folder")
-    sub.add_parser("shell", help="open a shell on a GPU node (starts an interactive session)")
 
     a = p.parse_args(argv)
     if a.cmd is None:
@@ -189,8 +188,6 @@ def main(argv=None):
         return forward(["logs", a.jobid, *(["-f"] if a.follow else [])], tty=a.follow)
     if a.cmd == "cancel":
         return forward(["cancel", a.jobid])
-    if a.cmd == "shell":
-        return ssh([GPU]).returncode
     return forward([a.cmd])
 
 

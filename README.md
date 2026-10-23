@@ -95,12 +95,11 @@ No VS Code needed. If all GPUs are busy, your job waits in the queue and starts 
 You need **Python 3.9+** and **git** on your laptop (Windows: `winget install Python.Python.3.12 Git.Git`).
 
 ```sh
-pipx install "git+https://github.com/alanyukeroo/how-to-access-gix-cluster#subdirectory=client"
+python3 -m pip install "git+https://github.com/alanyukeroo/how-to-access-gix-cluster#subdirectory=client"
 gix setup
 ```
 
-No `pipx`? macOS: `brew install pipx`. Windows/Linux: `python -m pip install --user pipx`, then `python -m pipx ensurepath`
-and open a new terminal.
+(Windows: `py -m pip install …`. If you use `pipx`, `pipx install …` works too.)
 
 `gix setup` asks for your NetID and, once, your NetID password. It also sets up `gix-gpu` for VS Code,
 so you can skip Step 1 above.
@@ -122,7 +121,7 @@ pick_cube/
 ```sh
 gix submit pick_cube/train.sbatch     # paths are relative to your NAS folder
 gix status                            # queued / running / recently finished
-gix logs 145                          # output of job 145 (add -f to follow it live)
+gix logs 145                          # output of job 145 (-f: follow it live until the job ends)
 gix cancel 145                        # stop it
 ```
 

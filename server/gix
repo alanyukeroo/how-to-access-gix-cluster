@@ -156,6 +156,21 @@ cmd_logs() {
     fi
     out="$(stdout_of "$id")"
     [[ -n "$out" ]] || die "don't know job $id (only jobs submitted with gix, or still in the queue)"
+    local in_queue
+    in_queue="$(squeue -h -j "$id" -o %i 2>/dev/null || true)"
+    if (( follow )) && [[ -n "$in_queue" ]]; then
+        echo "== $out (following until job $id ends; Ctrl+C to stop watching, the job keeps running)" >&2
+        [[ -f "$out" ]] || echo "Job $id has not started yet, waiting for output..." >&2
+        # watcher exits when the job leaves the queue; tail --pid stops with it.
+        # Polling instead of inotify: the output usually lives on the NAS (CIFS), where
+        # inotify doesn't see writes made by the compute node.
+        ( while [[ -n "$(squeue -h -j "$id" -o %i 2>/dev/null)" ]]; do sleep 5; done ) &
+        WATCHER=$!
+        trap 'kill "$WATCHER" 2>/dev/null' EXIT
+        tail -n 50 -F -s 2 ---disable-inotify --pid="$WATCHER" "$out" 2>/dev/null || true
+        echo "== job $id has ended" >&2
+        return 0
+    fi
     if [[ ! -f "$out" ]]; then
         if [[ "$(squeue -h -j "$id" -o %T 2>/dev/null)" == PENDING ]]; then
             echo "Job $id has not started yet, no output so far. (gix status)"
@@ -165,11 +180,8 @@ cmd_logs() {
         return 0
     fi
     echo "== $out" >&2
-    if (( follow )); then
-        tail -n 50 -F "$out"
-    else
-        tail -n 50 "$out"
-    fi
+    tail -n 50 "$out"
+    [[ -z "$in_queue" ]] || echo "== job $id is still running (gix logs $id -f to follow it)" >&2
 }
 
 cmd_cancel() {
