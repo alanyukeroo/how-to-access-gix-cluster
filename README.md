@@ -85,6 +85,57 @@ device: NVIDIA GeForce RTX 5090
 
 ---
 
+## Training jobs from your laptop (`gix`)
+
+For long runs (training, evaluation): send a job, close your laptop, check back later.
+No VS Code needed. If all GPUs are busy, your job waits in the queue and starts by itself.
+
+### Install (one time)
+
+You need **Python 3.9+** and **git** on your laptop (Windows: `winget install Python.Python.3.12 Git.Git`).
+
+```sh
+python3 -m pip install "git+https://github.com/alanyukeroo/how-to-access-gix-cluster#subdirectory=client"
+gix setup
+```
+
+(Windows: `py -m pip install …`. If you use `pipx`, `pipx install …` works too.)
+
+`gix setup` asks for your NetID and, once, your NetID password. It also sets up `gix-gpu` for VS Code,
+so you can skip Step 1 above.
+
+### Put your project on the NAS
+
+Your NAS folder is `/mnt/qnap/<netid>` on the cluster (`gix whoami`). Put your project there, e.g.:
+
+```
+pick_cube/
+├── train.py
+├── requirements.txt
+├── data/
+└── train.sbatch      ← copy examples/train.sbatch from this repo, change the lines marked CHANGE
+```
+
+### Run it
+
+```sh
+gix submit pick_cube/train.sbatch     # paths are relative to your NAS folder
+gix status                            # queued / running / recently finished
+gix logs 145                          # output of job 145 (-f: follow it live until the job ends)
+gix cancel 145                        # stop it
+```
+
+```
+$ gix submit pick_cube/train.sbatch
+Job 145 submitted (train, gpu:1)
+Queue position: 1 of 1. It starts by itself when a GPU is free.
+Output: /mnt/qnap/jdoe/pick_cube/slurm-145.out
+```
+
+Results land in your project folder on the NAS (e.g. `outputs/`).
+
+---
+
 ## Good to know
 
 | | |

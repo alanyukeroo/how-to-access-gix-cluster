@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+gix_cli/__init__.py
+gix_cli/__main__.py
+gix_cli/cli.py
+gix_cli.egg-info/PKG-INFO
+gix_cli.egg-info/SOURCES.txt
+gix_cli.egg-info/dependency_links.txt
+gix_cli.egg-info/entry_points.txt
+gix_cli.egg-info/top_level.txt

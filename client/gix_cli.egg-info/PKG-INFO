@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: gix-cli
+Version: 0.1.0
+Summary: Submit and follow GPU jobs on the GIX cluster from your laptop
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+
+# gix
+
+Laptop client for the GIX GPU cluster. See the [main README](../README.md).
